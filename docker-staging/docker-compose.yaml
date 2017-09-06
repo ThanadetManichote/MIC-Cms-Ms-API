@@ -11,9 +11,5 @@ mic_cms_ms_api:
     ENVIRONMENT: docker
   container_name: mic_cms_ms_api
 
-mic_cms_ms_mongo:
-  build: mongo/
-  ports:
-    - "27087:27017"
-  container_name: mic_cms_ms_mongo
+
   

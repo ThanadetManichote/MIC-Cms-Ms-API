@@ -3,7 +3,7 @@
 $settings = [
     'database' => [
         'mongo' => [
-            'host'     => 'mic_cms_mongo',
+            'host'     => 'mic_cms_ms_mongo',
             'port'     => '27017',
             'username' => '',
             'password' => '',
