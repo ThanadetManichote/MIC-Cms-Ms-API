@@ -55,15 +55,15 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
     public function createlinks($limit,$totalRecord)
     {
         if($limit>=$totalRecord){
-            $links['self'] = "http://mic-cms-api.dev:8077/content";
+            $links['self'] = "http://mic-cms-api.dev:8107/content";
             $links['next'] = "";
             $links['last'] = "";
         }else{
             $totalpage = $totalRecord/$limit;
             $offset = $totalpage*$limit;
-            $links['self'] = "http://mic-cms-api.dev:8077/content";
-            $links['next'] = "http://mic-cms-api.dev:8077/content?page[offset]=2";
-            $links['last'] = "http://mic-cms-api.dev:8077/content?page[offset]=".$offset;
+            $links['self'] = "http://mic-cms-api.dev:8107/content";
+            $links['next'] = "http://mic-cms-api.dev:8107/content?page[offset]=2";
+            $links['last'] = "http://mic-cms-api.dev:8107/content?page[offset]=".$offset;
         }
         return $links;
     }

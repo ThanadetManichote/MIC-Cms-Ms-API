@@ -2,7 +2,7 @@ mic_cms_ms_api:
   build: web/
   tty: true
   ports:
-    - "8077:80"
+    - "8107:80"
   volumes:
     - ../:/var/www/html
   links:
