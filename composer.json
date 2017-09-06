@@ -1,0 +1,14 @@
+{
+  "name" : "Template Phalcon",
+  "description" : "Template falcon project for api",
+  "version" : "1.0.0",
+  "require" : {
+    "phalcon/devtools": "3.0.4",
+    "phalcon/incubator": "3.0.4",
+    "phpunit/phpunit": "4.5.*",
+    "phpunit/php-code-coverage": "2.0.*"
+  },
+  "require-dev": {
+    "mockery/mockery": "dev-master"
+  }
+}

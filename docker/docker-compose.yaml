@@ -1,0 +1,19 @@
+mic_cms_api:
+  build: web/
+  tty: true
+  ports:
+    - "8077:80"
+  volumes:
+    - ../:/var/www/html
+  links:
+    - mic_cms_mongo:mongo
+  environment:
+    ENVIRONMENT: docker
+  container_name: mic_cms_api
+
+mic_cms_mongo:
+  build: mongo/
+  ports:
+    - "27087:27017"
+  container_name: mic_cms_mongo
+  
