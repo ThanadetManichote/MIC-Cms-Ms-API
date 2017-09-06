@@ -5,10 +5,8 @@ mic_cms_ms_api:
     - "8077:80"
   volumes:
     - ../:/var/www/html
-  links:
-    - mic_cms_ms_mongo:mongo
   environment:
-    ENVIRONMENT: docker
+    ENVIRONMENT: staging
   container_name: mic_cms_ms_api
 
 
