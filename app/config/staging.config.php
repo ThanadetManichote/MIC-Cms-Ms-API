@@ -3,11 +3,11 @@
 $settings = [
     'database' => [
         'mongo' => [
-            'host'     => '',
-            'port'     => '',
-            'username' => '',
-            'password' => '',
-            'dbname'   => '',
+            'host'     => '192.168.110.132',
+            'port'     => '27017',
+            'username' => 'mic_cms_ms',
+            'password' => '1qaz2wsx',
+            'dbname'   => 'mic_cms_ms',
         ],
     ],
     'application' => [
@@ -17,7 +17,7 @@ $settings = [
         'modelsDir'      => __DIR__ . '/../../app/models/',
         'controllersDir' => __DIR__ . '/../../app/controllers/',
         'libraryDir'     => __DIR__ . '/../../app/library/',
-        'baseUri'        => 'http://rpp-user-ms-api.dev',
+        'baseUri'        => 'http://mic-cms-api.dev',
     ],
     'import' => [
         'path' => '/data/import/user/',   
