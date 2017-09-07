@@ -46,7 +46,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
             $filterCon = $this->mongoService->manageLimitOffsetInParams($params['page'], $filterCon);
             $contents     = $model->find($filterCon);
         }
-        $contents = $this->mongoformatid($contents);
+        $contents = $this->mongoService->graphFormatId($contents);
         $links = $this->createlinks($params['page']['limit'],$total);
 
         return [$contents,$total,$links];
@@ -68,26 +68,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         return $links;
     }
 
-    public function mongoformatid($contents)
-    {
-        if(count($contents)>0){
-            foreach ($contents as $k => $v) {
-                $contents[$k]->id = (string)$v->_id;
-                if(isset($v->first_name)){
-                    $contents[$k]->attributes->first_name = $v->first_name;
-                    unset($v->first_name);
-                }
-
-                if(isset($v->last_name)){
-                    $contents[$k]->attributes->last_name = $v->last_name;
-                    unset($v->last_name);
-                }
-                $contents[$k]->relationships = (object)[];
-                unset($v->_id);
-            }
-        }        
-        return $contents;
-    }
+    
 
     //Method get array lang
     public function langsetting($params)
@@ -110,7 +91,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
             'message' => '',
         ];
 
-        // try {
+        try {
             // create filter
             $contents           = $this->getDataByParams($params);
             $outputs['links'] = $contents[2];
@@ -121,14 +102,53 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
                 $outputs['totalRecord'] = $contents[1];
             }
 
-        // } catch (\Exception $e) {
-        //     $outputs['success'] = false;
-        //     $outputs['message'] = 'missionFail';
-        // }
+        } catch (\Exception $e) {
+            $outputs['success'] = false;
+            $outputs['message'] = 'missionFail';
+        }
 
 
 
         return $outputs;
+    }
+
+    //Method for get content detail by id (list)
+    public function getContentDetail($params)
+    {
+        //Define output
+        $outputs = [
+            'success' => true,
+            'message' => '',
+        ];
+
+        try { 
+            //get data
+            $contents           = $this->getDetailDataById($params['id']);
+            
+            $contents           = $this->mongoService->graphFormatId($contents);
+            
+            $contents           = $this->mongoService->graphManageSortDataByIdList($contents, $params['id']);
+            
+            $outputs['data'] = $contents;
+
+        } catch (\Exception $e) {
+            $outputs['success'] = false;
+            $outputs['message'] = 'missionFail';
+        }
+        
+
+        return $outputs;    
+    }
+
+
+    //Method for get category detail
+    protected function getDetailDataById($id)
+    {
+        //create model
+        $model = $this->getContentModel();
+        $contents = $this->mongoService->getDetailDataById($model, $id, $this->allowFilter);
+
+        return $contents;
     }
 
 

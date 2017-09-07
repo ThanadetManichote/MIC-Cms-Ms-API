@@ -25,11 +25,10 @@ $api->addGet('/content', [
     'controller' => 'content',
     'action'     => 'getContent',
 ]);
-$api->addPost('/content', [
+$api->addGet('/content/detail', [
     'controller' => 'content',
-    'action'     => 'postContent',
-]);
-//==== End : Content Section ====//
+    'action'     => 'getContentDetail',
+]);//==== End : Content Section ====//
 
 
 

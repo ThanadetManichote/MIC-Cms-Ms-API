@@ -234,4 +234,46 @@ class MongoService {
 
         return $datas;
     }
+
+    //Method for format output
+    public function graphFormatId($contents)
+    {
+        if(count($contents)>0){
+            foreach ($contents as $k => $v) {
+                $contents[$k]->id = (string)$v->_id;
+                if(isset($v->first_name)){
+                    $contents[$k]->attributes->first_name = $v->first_name;
+                    unset($v->first_name);
+                }
+
+                if(isset($v->last_name)){
+                    $contents[$k]->attributes->last_name = $v->last_name;
+                    unset($v->last_name);
+                }
+                $contents[$k]->relationships = (object)[];
+                unset($v->_id);
+            }
+        }        
+        return $contents;
+    }
+
+    //Method for manage sort data bt id list
+    public function graphManageSortDataByIdList($datas, $id)
+    {
+        //Define outputs
+        $outputs = [];
+
+        //get id
+        $ids = explode($this->idDelimeter, $id);
+
+        foreach ($ids as $id) {
+            foreach ($datas as $data) {
+                if ($data->id == $id) {
+                    $outputs[] = $data;
+                    break;
+                }
+            }
+        }
+        return $outputs;
+    }
 }

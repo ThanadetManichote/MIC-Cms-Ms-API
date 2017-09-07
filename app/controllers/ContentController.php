@@ -14,6 +14,7 @@ class ContentController extends ApiController
             'fields' => ['id'],
         ]
     ];
+
     //------- end : Define variable ----------//
 
 
@@ -50,5 +51,39 @@ class ContentController extends ApiController
 
         return $this->outputgraph($result, $inputs);
     }
+
+    //Method for get user detail data
+    public function getContentDetailAction()
+    {
+        //get input
+        $inputs       = $this->getAllUrlParam();
+
+        //define default
+        $default      = [];
+        
+        // Validate input
+        $params       = $this->validateApi($this->getContentDetail, $default, $inputs);
+        
+        if (isset($params['msgError']))
+        {
+            //Validate error
+            return $this->validateError($params['fieldError'], $params['msgError']);
+        }
+        
+        //get content repository
+        $contentRepo = $this->getContentRepository();
+        
+        //get user data by id
+        $result   = $contentRepo->getContentDetail($params);
+
+        //Check response error
+        if (!$result['success'])
+        {
+            return $this->validateBussinessError($result['message']);
+        }
+
+        return $this->output($result['data']);
+    }
+
 
 }
