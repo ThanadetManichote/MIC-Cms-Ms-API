@@ -269,7 +269,7 @@ class MongoService {
         foreach ($ids as $id) {
             foreach ($datas as $data) {
                 if ($data->id == $id) {
-                    $outputs[] = $data;
+                    $outputs = $data;
                     break;
                 }
             }
