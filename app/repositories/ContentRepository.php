@@ -47,7 +47,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
             $contents     = $model->find($filterCon);
         }
         $contents = $this->mongoService->graphFormatId($contents);
-        $links = $this->createlinks($params['page']['limit'],$total);
+        // $links = $this->createlinks($params['page']['limit'],$total);
 
         return [$contents,$total,$links];
     }
