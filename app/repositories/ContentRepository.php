@@ -6,7 +6,7 @@ use App\Models\Contents;
 class ContentRepository extends \Phalcon\Mvc\Micro {
 
     //------- start : Define variable ----------//
-    protected $allowFilter = ['name'];
+    protected $allowFilter = ['id','last_name','first_name'];
     //------- end : Define variable ----------//
 
     //------- start: protected method ------------//
@@ -16,12 +16,11 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         return $this->model->getModel('Contents');
     }
 
-    protected function getDataByParams($params)
+    protected function getDataByParams($params,$headers)
     {
-        $language = $this->langsetting($params);
+        $language = $this->langsetting($headers);
         //Create conditions
         $conditions  = $this->mongoService->createConditionFilter($params, $this->allowFilter);
-
         //create model
         $model       = $this->getContentModel();
         
@@ -46,8 +45,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
             $filterCon = $this->mongoService->manageLimitOffsetInParams($params['page'], $filterCon);
             $contents     = $model->find($filterCon);
         }
-        $contents = $this->mongoService->graphFormatId($contents);
-        // $links = $this->createlinks($params['page']['limit'],$total);
+        $contents = $this->mongoService->graphFormatData($contents,$language);
 
         return [$contents,$total,$links];
     }
@@ -73,17 +71,17 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
     //Method get array lang
     public function langsetting($params)
     {
-        if(isset($params['language']) && $params['language']){
-            $lang = explode("|",$params['language']);
+        if(isset($params['Language']) && $params['Language']){
+            $lang = explode("|",$params['Language']);
         }else{
-            $lang = [];
+            $lang = ['th','en','zh'];
         }
         return $lang;
     }
 
 
     //Method for get content by filter
-    public function getContent($params)
+    public function getContent($params,$headers)
     {
         //Define output
         $outputs = [
@@ -93,7 +91,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
 
         try {
             // create filter
-            $contents           = $this->getDataByParams($params);
+            $contents           = $this->getDataByParams($params,$headers);
             $outputs['links'] = $contents[2];
             $outputs['data'] = $contents[0];
 
@@ -113,8 +111,9 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
     }
 
     //Method for get content detail by id (list)
-    public function getContentDetail($params)
+    public function getContentDetail($params,$headers)
     {
+        $language = $this->langsetting($headers);
         //Define output
         $outputs = [
             'success' => true,
@@ -124,10 +123,10 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         try { 
             //get data
             $contents           = $this->getDetailDataById($params['id']);
-            
-            $contents           = $this->mongoService->graphFormatId($contents);
-            
-            $contents           = $this->mongoService->graphManageSortDataByIdList($contents, $params['id']);
+
+            $contents           = $this->mongoService->graphFormatData($contents,$language);
+
+            $contents           = $this->mongoService->graphManageSortDataByIdList($contents, $params['id'],$language);
             
             $outputs['data'] = $contents;
 
@@ -147,7 +146,6 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         //create model
         $model = $this->getContentModel();
         $contents = $this->mongoService->getDetailDataById($model, $id, $this->allowFilter);
-
         return $contents;
     }
 

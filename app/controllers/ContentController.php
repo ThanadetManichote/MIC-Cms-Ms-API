@@ -33,11 +33,13 @@ class ContentController extends ApiController
         //get input
         $inputs   = $this->getAllUrlParam();
 
+        $headers = $this->getHeaders();
+
         //get field repository
         $contentRepo = $this->getContentRepository();
 
         //get content data by input
-        $result   = $contentRepo->getContent($inputs);
+        $result   = $contentRepo->getContent($inputs,$headers);
 
         //Check response error
         if (!$result['success'])
@@ -58,6 +60,8 @@ class ContentController extends ApiController
         //get input
         $inputs       = $this->getAllUrlParam();
 
+        $headers = $this->getHeaders();
+
         //define default
         $default      = [];
         
@@ -72,9 +76,9 @@ class ContentController extends ApiController
         
         //get content repository
         $contentRepo = $this->getContentRepository();
-        
+
         //get user data by id
-        $result   = $contentRepo->getContentDetail($params);
+        $result   = $contentRepo->getContentDetail($params,$headers);
 
         //Check response error
         if (!$result['success'])

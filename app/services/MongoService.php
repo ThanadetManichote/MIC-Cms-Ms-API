@@ -235,43 +235,58 @@ class MongoService {
         return $datas;
     }
 
+
+
     //Method for format output
-    public function graphFormatId($contents)
-    {
+    public function graphFormatData($contents,$lang)
+    {   
+        //Define outputs
+        $outputs = [];
         if(count($contents)>0){
             foreach ($contents as $k => $v) {
-                $contents[$k]->id = (string)$v->_id;
-                if(isset($v->first_name)){
-                    $contents[$k]->attributes->first_name = $v->first_name;
-                    unset($v->first_name);
-                }
-
-                if(isset($v->last_name)){
-                    $contents[$k]->attributes->last_name = $v->last_name;
-                    unset($v->last_name);
-                }
-                $contents[$k]->relationships = (object)[];
+                $outputs[$k]->id = (string)$v->_id;
                 unset($v->_id);
+
+                foreach ($v as $index2 => $val2) {
+                    foreach ($val2 as $index3 => $val3) {
+                        if(in_array($index3,$lang)){
+                            $outputs[$k]->attributes->$index2[$index3] = $val3;
+                        }
+                    }
+                }
             }
-        }        
-        return $contents;
+        }
+        return $outputs;
     }
 
+
+
     //Method for manage sort data bt id list
-    public function graphManageSortDataByIdList($datas, $id)
+    public function graphManageSortDataByIdList($datas, $id,$lang)
     {
         //Define outputs
         $outputs = [];
 
         //get id
-        $ids = explode($this->idDelimeter, $id);
+        $id = explode($this->idDelimeter, $id);
 
-        foreach ($ids as $id) {
+        foreach ($id as $id) {
             foreach ($datas as $data) {
                 if ($data->id == $id) {
                     $outputs = $data;
-                    break;
+                    // break;
+                    foreach ($data->attributes as $index2 => $val2) {
+                        foreach ($val2 as $index3 => $val3) {
+                            unset($outputs->attributes->$index2[$index3]);
+                            if(in_array($index3,$lang)){
+                                $outputs->attributes->$index2[$index3] = $val3;
+                            }
+                            
+                        }
+                    }
                 }
+
+                
             }
         }
         return $outputs;

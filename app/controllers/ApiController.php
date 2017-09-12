@@ -313,6 +313,14 @@ class ApiController extends \Phalcon\Mvc\Micro
         return "en";
     }
 
+    protected function getHeaders()
+    {
+        $request  = $this->request;
+        $headers  = $request->getHeaders();
+
+        return $headers;
+    }
+
     public function dd($data)
     {
         echo "<pre>";

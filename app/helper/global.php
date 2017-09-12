@@ -17,3 +17,19 @@ if (!function_exists('dd')) {
 		exit();
 	}
 }
+
+if (!function_exists('ddm')) {
+	function ddm($data) {
+		if(count($data)>1){
+			foreach ($data as $r) {
+				$response[] = $r->toArray();
+			}
+		}else{
+			$response = $data->toArray();
+		}
+		echo '<pre>';
+		print_r($response);
+		echo '</pre>';
+		exit();
+	}
+}
