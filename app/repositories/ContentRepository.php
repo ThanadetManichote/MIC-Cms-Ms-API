@@ -16,9 +16,8 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         return $this->model->getModel('Contents');
     }
 
-    protected function getDataByParams($params,$headers)
+    protected function getDataByParams($params,$language)
     {
-        $language = $this->langsetting($headers);
         //Create conditions
         $conditions  = $this->mongoService->createConditionFilter($params, $this->allowFilter);
         //create model
@@ -50,24 +49,6 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         return [$contents,$total,$links];
     }
 
-    public function createlinks($limit,$totalRecord)
-    {
-        if($limit>=$totalRecord){
-            $links['self'] = "http://mic-cms-api.dev:8107/content";
-            $links['next'] = "";
-            $links['last'] = "";
-        }else{
-            $totalpage = $totalRecord/$limit;
-            $offset = $totalpage*$limit;
-            $links['self'] = "http://mic-cms-api.dev:8107/content";
-            $links['next'] = "http://mic-cms-api.dev:8107/content?page[offset]=2";
-            $links['last'] = "http://mic-cms-api.dev:8107/content?page[offset]=".$offset;
-        }
-        return $links;
-    }
-
-    
-
     //Method get array lang
     public function langsetting($params)
     {
@@ -83,6 +64,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
     //Method for get content by filter
     public function getContent($params,$headers)
     {
+        $language = $this->langsetting($headers);
         //Define output
         $outputs = [
             'success' => true,
@@ -91,7 +73,7 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
 
         try {
             // create filter
-            $contents           = $this->getDataByParams($params,$headers);
+            $contents           = $this->getDataByParams($params,$language);
             $outputs['links'] = $contents[2];
             $outputs['data'] = $contents[0];
 
@@ -147,6 +129,53 @@ class ContentRepository extends \Phalcon\Mvc\Micro {
         $model = $this->getContentModel();
         $contents = $this->mongoService->getDetailDataById($model, $id, $this->allowFilter);
         return $contents;
+    }
+
+
+    //Method for insert data
+    public function addContent($params)
+    {
+        //Define output
+        $output = [
+            'success' => true,
+            'message' => '',
+            'data'    => '',
+        ];
+
+        //get model
+        $contentModel = $this->getContentModel();
+
+        //insert
+        $res = $this->insertData($contentModel, $params);
+
+        if (!$res)
+        {
+            //Cannot insert
+            $output['success'] = false;
+            $output['message'] = 'insertError';
+            return $output;
+        }
+
+        //add content data
+        $output['data'] = $this->mongoService->addIdTodata($res, false);
+
+        return $output;
+    }
+
+    //Method for insert data to db
+    protected function insertData($model, $params)
+    {
+        //create content
+        foreach ($params as $k => $v) {
+            $model->$k   = $v;
+        }
+
+        if (!$model->save())
+        {
+            return null;
+        }
+
+        return $model;
     }
 
 

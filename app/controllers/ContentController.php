@@ -15,6 +15,14 @@ class ContentController extends ApiController
         ]
     ];
 
+    private $insertContentRule = [
+        [
+            'type'   => 'required',
+            'fields' => ['first_name'],
+        ]
+    ];
+
+
     //------- end : Define variable ----------//
 
 
@@ -88,6 +96,39 @@ class ContentController extends ApiController
 
         return $this->output($result['data']);
     }
+
+    public function postContentCreateAction()
+    {
+        //get input
+        $inputs = $this->postInput();
+
+        //define default
+        $default = [];
+
+        // Validate input
+        $params = $this->validateApi($this->insertContentRule, $default, $inputs);
+
+        if (isset($params['msgError']))
+        {
+            //Validate error
+            return $this->validateError($params['fieldError'], $params['msgError']);
+        }
+
+        //get content repository
+        $contentRepo = $this->getContentRepository();
+
+        //add user data by input
+        $result = $contentRepo->addContent($params);
+
+        //Check response error
+        if (!$result['success'])
+        {
+            return $this->validateBussinessError($result['message']);
+        }
+
+        return $this->output($result['data']);
+    }
+
 
 
 }

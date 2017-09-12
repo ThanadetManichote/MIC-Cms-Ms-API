@@ -240,13 +240,30 @@ class ApiController extends \Phalcon\Mvc\Micro
         $request = DI::getDefault()->get('request');
 
         $rawInput = $request->getRawBody();
+
         //convert to array
         $inputs = json_decode($rawInput, true);
+
+        // dd($inputs);
 
         //convert empty to array
         if (empty($inputs))
         {
             $inputs = [];
+        }
+
+        return $inputs;
+    }
+
+    //Method for post paramerter
+    protected function postInput()
+    {
+        $request  = $this->request;
+        $rawInput = $request->getRawBody();
+        $inputs   = json_decode($rawInput, true);
+
+        if (empty($inputs) && $request->isPost()) {
+            return $request->getPost();
         }
 
         return $inputs;

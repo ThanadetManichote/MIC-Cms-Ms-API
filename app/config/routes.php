@@ -28,7 +28,12 @@ $api->addGet('/content', [
 $api->addGet('/content/detail', [
     'controller' => 'content',
     'action'     => 'getContentDetail',
-]);//==== End : Content Section ====//
+]);
+$api->addPost('/content', [
+    'controller' => 'content',
+    'action'     => 'postContentCreate',
+]);
+//==== End : Content Section ====//
 
 
 
