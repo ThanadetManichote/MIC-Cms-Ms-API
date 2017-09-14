@@ -8,55 +8,12 @@ use App\Library\MyLibrary;
 class SchemaController extends ApiController
 {
     //------- start : Define variable ----------//
-    private $getUserDetail = [
-        [
-            'type'   => 'required',
-            'fields' => ['id'],
-        ]
-    ];
-
-    private $insertUserRule = [
-        [
-            'type'   => 'required',
-            'fields' => ['username', 'password', 'name', 'last_name', 'email', 'role_id'],
-        ],[
-            'type'   => 'within',
-            'fields' => ['status' => ['active', 'inactive']],
-        ]
-    ];
-
-    private $updateUserRule = [
-        [
-            'type'   => 'required',
-            'fields' => ['id', 'username', 'password', 'name', 'last_name', 'email', 'role_id'],
-        ],[
-            'type'   => 'within',
-            'fields' => ['status' => ['active', 'inactive']],
-        ]
-    ];
-
-    private $deleteUserRule = [
-        [
-            'type'   => 'required',
-            'fields' => ['id'],
-        ],
-    ];
-
-    private $userLogin = [
-        [
-            'type'   => 'required',
-            'fields' => ['username', 'password'],
-        ]
-    ];
-
-    private $userChangePass = [
-        [
-            'type'   => 'required',
-            'fields' => ['id', 'old', 'new'],
-        ]
-    ];
-
-
+    // private $getSchema = [
+    //     [
+    //         'type'   => 'required',
+    //         'fields' => ['id'],
+    //     ]
+    // ];
     //------- end : Define variable ----------//
 
     //------- start: protected method ------------//

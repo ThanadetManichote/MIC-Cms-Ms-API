@@ -4,6 +4,8 @@ namespace App\Controllers;
 use App\Controllers\ApiController;
 use App\Repositories\ContentRepository;
 use App\Library\MyLibrary;
+use Phalcon\Http\Client\Request;
+
 
 class ContentController extends ApiController
 {
@@ -22,10 +24,18 @@ class ContentController extends ApiController
         ]
     ];
 
-
+    private $urlcurl = "http://staging-mic-cms-ms-api.eggdigital.com:8107/";
     //------- end : Define variable ----------//
 
-
+    private function insertContentRule()
+    {
+        // get available provider Curl or Stream
+        $provider = Request::getProvider();
+        $provider->setBaseUri($this->urlcurl);
+        $provider->header->set('Accept', 'application/json');
+        $response = $provider->get('schema');
+        return json_decode($response->body);
+    }
     //------- start: protected method ------------//
     //method for get content repo
     protected function getContentRepository()
@@ -38,6 +48,8 @@ class ContentController extends ApiController
     //Method for get content data
     public function getContentAction()
     {
+        $data = $this->insertContentRule();
+        dd($data);
         //get input
         $inputs   = $this->getAllUrlParam();
 

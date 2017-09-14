@@ -23,24 +23,30 @@ class SchemaRepository extends \Phalcon\Mvc\Micro {
 
         //create model
         $model       = $this->getSchemaModel();
-        
+
         $filterCon   = [$conditions];
         //Manage order
         $filterCon   = $this->mongoService->manageOrderInParams($params, $filterCon, $this->allowFilter);
 
+        //set limit
+        if(isset($params['page']['limit'])){
+            $params['page']['limit'] = $params['page']['limit'];
+        }else{
+            $params['page']['limit'] = 10;
+        }
+
         //query data
         $total = 0;
-        if (!isset($params['limit'])) {
+        if ($params['page']['limit'] == 'all') {
             $schemas = $model->find($filterCon);
             $total = count($schemas);
         } else {
-
             $total     = $model->count([$conditions]);
-            $filterCon = $this->mongoService->manageLimitOffsetInParams($params, $filterCon);
+            $filterCon = $this->mongoService->manageLimitOffsetInParams($params['page'], $filterCon);
             $schemas     = $model->find($filterCon);
-
-            
         }
+        $schemas = $this->mongoService->graphFormatData($schemas,$language);
+
         return [$schemas, $total];
     }
 

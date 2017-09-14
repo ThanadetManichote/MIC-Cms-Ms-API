@@ -248,6 +248,7 @@ class MongoService {
                 unset($v->_id);
 
                 foreach ($v as $index2 => $val2) {
+                    $outputs[$k]->attributes->$index2 = $val2;
                     foreach ($val2 as $index3 => $val3) {
                         if(in_array($index3,$lang)){
                             $outputs[$k]->attributes->$index2[$index3] = $val3;
