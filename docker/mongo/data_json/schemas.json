@@ -2,19 +2,19 @@
     "_id" : ObjectId("58928a2559233701a30ebc74"),
     "name" : "first_name",
     "type" : "text",
-    "attr" : "require"
+    "attr" : "required"
 }
 
 {
     "_id" : ObjectId("58e4bdb5db41d7003c7447d2"),
     "name" : "last_name",
     "type" : "text",
-    "attr" : "require"
+    "attr" : "required"
 }
 
 {
     "_id" : ObjectId("58e4bdc4db41d700234fe8a2"),
     "name" : "telephone",
     "type" : "text",
-    "attr" : "require"
+    "attr" : "required"
 }

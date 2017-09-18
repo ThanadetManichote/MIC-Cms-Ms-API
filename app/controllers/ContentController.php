@@ -17,25 +17,11 @@ class ContentController extends ApiController
         ]
     ];
 
-    private $insertContentRule = [
-        [
-            'type'   => 'required',
-            'fields' => ['first_name'],
-        ]
-    ];
-
     private $urlcurl = "http://staging-mic-cms-ms-api.eggdigital.com:8107/";
+
     //------- end : Define variable ----------//
 
-    private function insertContentRule()
-    {
-        // get available provider Curl or Stream
-        $provider = Request::getProvider();
-        $provider->setBaseUri($this->urlcurl);
-        $provider->header->set('Accept', 'application/json');
-        $response = $provider->get('schema');
-        return json_decode($response->body);
-    }
+
     //------- start: protected method ------------//
     //method for get content repo
     protected function getContentRepository()
@@ -48,8 +34,6 @@ class ContentController extends ApiController
     //Method for get content data
     public function getContentAction()
     {
-        $data = $this->insertContentRule();
-        dd($data);
         //get input
         $inputs   = $this->getAllUrlParam();
 
@@ -111,14 +95,19 @@ class ContentController extends ApiController
 
     public function postContentCreateAction()
     {
+        $data = $this->curlGetSchema();
+        $rule = $this->insertContentRule($data);
         //get input
         $inputs = $this->postInput();
+
+        $inputsforvalidate = $this->formatMultiInput($inputs);
 
         //define default
         $default = [];
 
+
         // Validate input
-        $params = $this->validateApi($this->insertContentRule, $default, $inputs);
+        $params = $this->validateApi($rule, $default, $inputsforvalidate);
 
         if (isset($params['msgError']))
         {
@@ -139,6 +128,73 @@ class ContentController extends ApiController
         }
 
         return $this->output($result['data']);
+    }
+
+    private function curlGetSchema()
+    {
+        // get available provider Curl or Stream
+        $provider = Request::getProvider();
+        $provider->setBaseUri($this->urlcurl);
+        $provider->header->set('Accept', 'application/json');
+        $response = $provider->get('schema');
+        return json_decode($response->body);
+    }
+
+    private function insertContentRule($data)
+    {
+        $rule = [];
+        if($data->status->code == 200){
+            foreach ($data->data as $k => $v) {
+                $type = $v->attributes->attr;
+                
+                
+                if($type == 'multi_required'){
+                    // $fields[] = $v->attributes->name;
+                    $fields[] = $v->attributes->name.'_th';
+                    $key = $this->searchValue($rule,'multi_required');
+                    if($key != 'notfound' || $key == '0'){
+                        $rule[$key]['fields'] = $fields;
+                    }else{
+                        $rule[$k] = [
+                            'type' => $v->attributes->attr,
+                            'fields' => $fields
+                        ];
+                    }
+                }else{
+                    $fields = '';
+                    $fields[] = $v->attributes->name;
+                    $rule[$k] = [
+                        'type' => $v->attributes->attr,
+                        'fields' => $fields
+                    ];
+                }
+            }
+        }
+        return $rule;
+    }
+
+    private function searchValue($rule,$txt_search)
+    {
+        $key = 'notfound';
+        foreach ($rule as $k => $v) {
+            if($v['type'] == $txt_search){
+                $key = $k;
+                break;
+            }
+        }
+        return $key;
+    }
+
+    private function formatMultiInput($inputs)
+    {
+        foreach ($inputs as $k => $v) {
+
+            foreach ($v as $key => $value) {
+                $inputs[$k."_".$key] = $value;
+                unset($inputs[$k]);
+            }
+        }
+        return $inputs;
     }
 
 

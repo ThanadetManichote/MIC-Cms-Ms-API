@@ -45,13 +45,12 @@ class ApiController extends \Phalcon\Mvc\Micro
         return array_merge($input, $return);
     }
 
-    protected function validate($input, $rules)
+    protected function validate($input,$rules)
     {
         $validation = new Validation();
 
         foreach ($rules as $value)
         {
-
             switch (strtolower($value['type']))
             {
 
@@ -64,6 +63,16 @@ class ApiController extends \Phalcon\Mvc\Micro
                         ]));
                     }
 
+                    break;
+
+                case 'multi_required':
+
+                    foreach ( $value['fields'] as $field ) {
+                        
+                        $validation->add($field, new PresenceOf([
+                            'message' => 'The ' . $field . ' is required',
+                        ]));
+                    }
                     break;
 
                 case 'number':
@@ -91,6 +100,7 @@ class ApiController extends \Phalcon\Mvc\Micro
             }
 
         }
+        // dd($input);
 
         $messages = $validation->validate($input);
 

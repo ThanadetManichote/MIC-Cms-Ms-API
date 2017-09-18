@@ -8,12 +8,12 @@ use App\Library\MyLibrary;
 class SchemaController extends ApiController
 {
     //------- start : Define variable ----------//
-    // private $getSchema = [
-    //     [
-    //         'type'   => 'required',
-    //         'fields' => ['id'],
-    //     ]
-    // ];
+    private $getSchema = [
+        [
+            'type'   => 'required',
+            'fields' => ['id'],
+        ]
+    ];
     //------- end : Define variable ----------//
 
     //------- start: protected method ------------//
@@ -32,19 +32,18 @@ class SchemaController extends ApiController
         $inputs   = $this->getAllUrlParam();
         //get field repository
         $schemaRepo = $this->getSchemaRepository();
+        //limit default equal 10
         $inputs['limit'] = 10;
         //get schema data by input
         $result   = $schemaRepo->getSchema($inputs);
 
-        // dd($result['success']);
-
         //Check response error
-        if (!$result['success'])
+        if(!$result['success'])
         {
             return $this->validateBussinessError($result['message']);
         }
 
-         if (isset($result['totalRecord'])) {
+        if(isset($result['totalRecord'])) {
             $inputs['totalRecord'] = $result['totalRecord'];
         }
 
