@@ -21,6 +21,7 @@ class ContentController extends ApiController
     {
         parent::__construct();
         $this->curlApi = $this->config['curl_api']['cms'];
+        echo $this->curlApi;
     }
 
     //------- end : Define variable ----------//
