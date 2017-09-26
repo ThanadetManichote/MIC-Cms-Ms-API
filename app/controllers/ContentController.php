@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Controllers\ApiController;
+use App\Controllers\SchemaController;
 use App\Repositories\ContentRepository;
 use App\Library\MyLibrary;
 use Phalcon\Http\Client\Request;
@@ -21,7 +22,6 @@ class ContentController extends ApiController
     {
         parent::__construct();
         $this->curlApi = $this->config['curl_api']['cms'];
-        echo $this->curlApi;
     }
 
     //------- end : Define variable ----------//
@@ -100,7 +100,10 @@ class ContentController extends ApiController
 
     public function postContentCreateAction()
     {
-        $data = $this->curlGetSchema();
+        $schema = new SchemaController();
+
+        $data = $schema->getSchema();
+        
         $rule = $this->insertContentRule($data);
         //get input
         $inputs = $this->postInput();
@@ -146,6 +149,39 @@ class ContentController extends ApiController
     }
 
     private function insertContentRule($data)
+    {
+        $rule = [];
+        if($data['success'] == 1){
+            foreach ($data['data'] as $k => $v) {
+                $type = $v->attributes->attr;
+                
+                
+                if($type == 'multi_required'){
+                    // $fields[] = $v->attributes->name;
+                    $fields[] = $v->attributes->name.'_th';
+                    $key = $this->searchValue($rule,'multi_required');
+                    if($key != 'notfound' || $key == '0'){
+                        $rule[$key]['fields'] = $fields;
+                    }else{
+                        $rule[$k] = [
+                            'type' => $v->attributes->attr,
+                            'fields' => $fields
+                        ];
+                    }
+                }else{
+                    $fields = '';
+                    $fields[] = $v->attributes->name;
+                    $rule[$k] = [
+                        'type' => $v->attributes->attr,
+                        'fields' => $fields
+                    ];
+                }
+            }
+        }
+        return $rule;
+    }
+
+    private function insertContentRule_back($data)
     {
         $rule = [];
         if($data->status->code == 200){

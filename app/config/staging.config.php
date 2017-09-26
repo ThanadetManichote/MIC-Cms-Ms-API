@@ -23,6 +23,6 @@ $settings = [
         'path' => '/data/import/user/',   
     ],
     'curl_api' => [
-        'cms'   => 'http://localhost:8107/',
+        'cms'   => 'http://staging-mic-cms-ms-api.eggdigital.com:8107/',
     ],
 ];

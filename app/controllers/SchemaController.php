@@ -33,7 +33,7 @@ class SchemaController extends ApiController
         //get field repository
         $schemaRepo = $this->getSchemaRepository();
         //limit default equal 10
-        $inputs['limit'] = 10;
+        // $inputs['limit'] = 10;
         //get schema data by input
         $result   = $schemaRepo->getSchema($inputs);
 
@@ -49,5 +49,30 @@ class SchemaController extends ApiController
 
         return $this->output($result['data'], $inputs);
     }
+
+    public function getSchema()
+    {
+        //get input
+        $inputs   = $this->getAllUrlParam();
+        //get field repository
+        $schemaRepo = $this->getSchemaRepository();
+        //limit default equal 10
+        $inputs['page']['limit'] = 'all';
+        //get schema data by input
+        $result   = $schemaRepo->getSchema($inputs);
+
+        //Check response error
+        if(!$result['success'])
+        {
+            return $this->validateBussinessError($result['message']);
+        }
+
+        if(isset($result['totalRecord'])) {
+            $inputs['totalRecord'] = $result['totalRecord'];
+        }
+
+        return $result;
+    }
+
 
 }
