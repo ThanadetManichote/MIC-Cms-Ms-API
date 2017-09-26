@@ -17,7 +17,11 @@ class ContentController extends ApiController
         ]
     ];
 
-    private $urlcurl = "http://staging-mic-cms-ms-api.eggdigital.com";
+    public function __construct()
+    {
+        parent::__construct();
+        $this->curlApi = $this->config['curl_api']['cms'];
+    }
 
     //------- end : Define variable ----------//
 
@@ -134,7 +138,7 @@ class ContentController extends ApiController
     {
         // get available provider Curl or Stream
         $provider = Request::getProvider();
-        $provider->setBaseUri($this->urlcurl);
+        $provider->setBaseUri($this->curlApi);
         $provider->header->set('Accept', 'application/json');
         $response = $provider->get('schema');
         return json_decode($response->body);

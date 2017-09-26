@@ -22,4 +22,7 @@ $settings = [
     'import' => [
         'path' => '/data/import/user/',   
     ],
+    'curl_api' => [
+        'cms'   => 'http://localhost:8107/',
+    ],
 ];
