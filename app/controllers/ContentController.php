@@ -17,7 +17,7 @@ class ContentController extends ApiController
         ]
     ];
 
-    private $urlcurl = "http://staging-mic-cms-ms-api.eggdigital.com:8107/";
+    private $urlcurl = "http://staging-mic-cms-ms-api.eggdigital.com";
 
     //------- end : Define variable ----------//
 
